@@ -1,176 +1,99 @@
-// عناصر الصفحة
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
-const message = document.getElementById("message");
+// ===== ANNIVERSARY YES SCRIPT =====
 
-let noCount = 0;
-let yesUnlocked = false;
+// Main trigger when user clicks YES
+function sayYes() {
+  const questionBox = document.getElementById("question");
+  const yesScreen = document.getElementById("yesScreen");
 
-// 🔒 Lock YES initially
-yesBtn.style.opacity = "0.6";
-yesBtn.style.cursor = "not-allowed";
-
-// 💬 Messages
-const noMessages = [
-  "Hmm... try again 😏",
-  "Are you sure? 😢",
-  "You can't escape this 😈",
-  "Getting closer... 👀",
-  "Almost there... 💕",
-  "Okay fine... one more 😌"
-];
-
-const blockedYesMessages = [
-  "Hey! Not so fast 😤",
-  "You gotta earn that YES 😌",
-  "Try pressing NO first 😏",
-  "Don't skip the story 😢❤️"
-];
-
-// 🏃 Move NO button
-function moveNoButton() {
-  const maxX = window.innerWidth - noBtn.offsetWidth;
-  const maxY = window.innerHeight - noBtn.offsetHeight;
-
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
-
-  noBtn.style.position = "absolute";
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
-
-  // shrink + rotate
-  noBtn.style.transform =
-    `scale(${Math.max(0.5, 1 - noCount * 0.05)})
-     rotate(${noCount * 15}deg)`;
-}
-
-// 😈 Handle NO hover
-noBtn.addEventListener("mouseover", () => {
-  noCount++;
-
-  // update message
-  if (noCount < noMessages.length) {
-    message.textContent = noMessages[noCount];
-  } else {
-    message.textContent = "Okay okay... now you can press YES 😳❤️";
-  }
-
-  // grow YES gradually
-  yesBtn.style.transform = `scale(${1 + noCount * 0.12})`;
-
-  // unlock condition
-  if (noCount >= 5 && !yesUnlocked) {
-    unlockYes();
-  }
-
-  moveNoButton();
-});
-
-// 🔒 Block YES spam clicks
-yesBtn.addEventListener("click", (e) => {
-  if (!yesUnlocked) {
-    e.preventDefault();
-
-    // random teasing message
-    const randomMsg =
-      blockedYesMessages[Math.floor(Math.random() * blockedYesMessages.length)];
-
-    message.textContent = randomMsg;
-
-    // shake button
-    yesBtn.style.transform = "scale(1.2) translateX(-5px)";
+  // Hide question section
+  if (questionBox) {
+    questionBox.style.opacity = "0";
+    questionBox.style.transform = "scale(0.8)";
     setTimeout(() => {
-      yesBtn.style.transform = "scale(1.2) translateX(5px)";
-    }, 100);
-
-    setTimeout(() => {
-      yesBtn.style.transform = "scale(1)";
-    }, 200);
-
-    return;
+      questionBox.style.display = "none";
+    }, 400);
   }
 
-  // ✅ REAL YES ACTION
-  startLoveSequence();
-});
+  // Show YES screen
+  if (yesScreen) {
+    yesScreen.style.display = "block";
+    setTimeout(() => {
+      yesScreen.classList.add("show");
+    }, 50);
+  }
 
-// 🔓 Unlock YES
-function unlockYes() {
-  yesUnlocked = true;
-
-  yesBtn.style.opacity = "1";
-  yesBtn.style.cursor = "pointer";
-  yesBtn.style.boxShadow = "0 0 20px rgba(255,77,109,0.8)";
-  yesBtn.innerText = "Yes ❤️ (Now you can click 😌)";
-
-  message.textContent = "Alright... you earned it 💖";
-}
-
-// 💖 Final sequence
-function startLoveSequence() {
-  document.body.innerHTML = `
-    <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
-      <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
-      <p style="font-size:1.5em;">You didn't give up on me 🥰</p>
-      <p>I love you more every day 💕</p>
-    </div>
-  `;
-
-  launchConfetti();
+  // Effects
   createHearts();
+  createConfetti();
+  typeMessage();
 }
 
-// 🎉 Confetti
-function launchConfetti() {
-  for (let i = 0; i < 120; i++) {
-    const el = document.createElement("div");
-    el.style.position = "fixed";
-    el.style.width = "8px";
-    el.style.height = "8px";
-    el.style.background = randomColor();
-    el.style.top = "-10px";
-    el.style.left = Math.random() * window.innerWidth + "px";
-
-    document.body.appendChild(el);
-
-    let fall = setInterval(() => {
-      let top = parseFloat(el.style.top);
-      el.style.top = top + 5 + "px";
-
-      if (top > window.innerHeight) {
-        clearInterval(fall);
-        el.remove();
-      }
-    }, 20);
-  }
-}
-
-// 💕 Hearts
+// 💖 Floating hearts
 function createHearts() {
-  setInterval(() => {
+  for (let i = 0; i < 30; i++) {
     const heart = document.createElement("div");
-    heart.innerHTML = "❤️";
+    heart.innerHTML = "💖";
+
     heart.style.position = "fixed";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.bottom = "0";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.top = "100vh";
+    heart.style.fontSize = (16 + Math.random() * 30) + "px";
+    heart.style.opacity = "0.9";
+    heart.style.zIndex = "9999";
+    heart.style.pointerEvents = "none";
+
+    heart.style.animation = `floatUp ${3 + Math.random() * 2}s linear forwards`;
 
     document.body.appendChild(heart);
 
-    let rise = setInterval(() => {
-      let bottom = parseFloat(heart.style.bottom);
-      heart.style.bottom = bottom + 3 + "px";
-
-      if (bottom > window.innerHeight) {
-        clearInterval(rise);
-        heart.remove();
-      }
-    }, 20);
-  }, 300);
+    setTimeout(() => heart.remove(), 5000);
+  }
 }
 
-// 🎨 Colors
-function randomColor() {
-  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5"];
-  return colors[Math.floor(Math.random() * colors.length)];
+// 🎉 Confetti burst
+function createConfetti() {
+  const colors = ["#ff4d6d", "#ff85a2", "#ffd1dc", "#ffffff", "#ffccd5"];
+
+  for (let i = 0; i < 70; i++) {
+    const confetti = document.createElement("div");
+
+    confetti.style.position = "fixed";
+    confetti.style.width = "8px";
+    confetti.style.height = "8px";
+    confetti.style.backgroundColor =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.top = "-10px";
+    confetti.style.opacity = "0.8";
+    confetti.style.zIndex = "9999";
+    confetti.style.borderRadius = "2px";
+
+    confetti.style.animation = `fall ${2.5 + Math.random() * 2}s linear forwards`;
+
+    document.body.appendChild(confetti);
+
+    setTimeout(() => confetti.remove(), 4000);
+  }
+}
+
+// ✍️ Typing message reveal
+function typeMessage() {
+  const message = document.getElementById("finalMessage");
+  if (!message) return;
+
+  const text =
+    "Three years with you feels like the best decision of my life. I’d choose you again, every time. ❤️";
+
+  message.innerHTML = "";
+  let i = 0;
+
+  const typing = setInterval(() => {
+    message.innerHTML += text.charAt(i);
+    i++;
+
+    if (i >= text.length) {
+      clearInterval(typing);
+    }
+  }, 40);
 }
