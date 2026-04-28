@@ -1,80 +1,24 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ffe6eb, #ffd6e0);
-  text-align: center;
-  overflow: hidden;
-}
-
-.container {
-  margin-top: 120px;
-}
-
-h1 {
-  font-size: 3em;
-  color: #ff4d6d;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 1.3em;
-  color: #444;
-}
-
-.buttons {
-  margin-top: 40px;
-  position: relative;
-  height: 250px;
-}
-
-button {
-  font-size: 18px;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Yes button */
-#yesBtn {
-  background: #ff4d6d;
-  color: white;
-  box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-}
-
-#yesBtn:hover {
-  transform: scale(1.1);
-  background: #ff3355;
-}
-
-/* No button */
-#noBtn {
-  background: #888;
-  color: white;
-  position: absolute;
-}
-
-#noBtn:hover {
-  background: #666;
-}
-
-/* Optional floating hearts animation */
-.heart {
-  position: absolute;
-  color: #ff4d6d;
-  font-size: 20px;
-  animation: floatUp 5s linear infinite;
-}
-
+<style>
 @keyframes floatUp {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
   to {
-    transform: translateY(-600px);
+    transform: translateY(-120vh);
     opacity: 0;
   }
 }
+
+@keyframes fall {
+  to {
+    transform: translateY(120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.pop-in {
+  animation: pop 0.6s ease forwards;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
