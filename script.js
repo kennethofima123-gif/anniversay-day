@@ -1,145 +1,127 @@
-const gifStages = [
-    "https://media.tenor.com/EBV7OT7ACfwAAAAj/u-u-qua-qua-u-quaa.gif",    // 0 normal
-    "https://media1.tenor.com/m/uDugCXK4vI4AAAAd/chiikawa-hachiware.gif",  // 1 confused
-    "https://media.tenor.com/f_rkpJbH1s8AAAAj/somsom1012.gif",             // 2 pleading
-    "https://media.tenor.com/OGY9zdREsVAAAAAj/somsom1012.gif",             // 3 sad
-    "https://media1.tenor.com/m/WGfra-Y_Ke0AAAAd/chiikawa-sad.gif",       // 4 sadder
-    "https://media.tenor.com/CivArbX7NzQAAAAj/somsom1012.gif",             // 5 devastated
-    "https://media.tenor.com/5_tv1HquZlcAAAAj/chiikawa.gif",               // 6 very devastated
-    "https://media1.tenor.com/m/uDugCXK4vI4AAAAC/chiikawa-hachiware.gif"  // 7 crying runaway
-]
+// عناصر الصفحة
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("message");
 
-const noMessages = [
-    "No",
-    "Are you positive? 🤔",
-    "Pookie please... 🥺",
-    "If you say no, I will be really sad...",
-    "I will be very sad... 😢",
-    "Please??? 💔",
-    "Don't do this to me...",
-    "Last chance! 😭",
-    "You can't catch me anyway 😜"
-]
+let noClickCount = 0;
 
-const yesTeasePokes = [
-    "try saying no first... I bet you want to know what happens 😏",
-    "go on, hit no... just once 👀",
-    "you're missing out 😈",
-    "click no, I dare you 😏"
-]
+// رسائل تتغير مع كل محاولة ضغط "No"
+const messages = [
+  "Are you sure? 😢",
+  "Really sure? 🥺",
+  "Think again 💔",
+  "Last chance 😭",
+  "You’re breaking my heart 💔",
+  "Okay this is getting serious 😤",
+  "Please just click YES 😭❤️"
+];
 
-let yesTeasedCount = 0
+// حركة زر "No"
+function moveNoButton() {
+  const maxX = window.innerWidth - noBtn.offsetWidth;
+  const maxY = window.innerHeight - noBtn.offsetHeight;
 
-let noClickCount = 0
-let runawayEnabled = false
-let musicPlaying = true
+  const randomX = Math.random() * maxX;
+  const randomY = Math.random() * maxY;
 
-const catGif = document.getElementById('cat-gif')
-const yesBtn = document.getElementById('yes-btn')
-const noBtn = document.getElementById('no-btn')
-const music = document.getElementById('bg-music')
+  noBtn.style.position = "absolute";
+  noBtn.style.left = randomX + "px";
+  noBtn.style.top = randomY + "px";
 
-// Autoplay: audio starts muted (bypasses browser policy), unmute immediately
-music.muted = true
-music.volume = 0.3
-music.play().then(() => {
-    music.muted = false
-}).catch(() => {
-    // Fallback: unmute on first interaction
-    document.addEventListener('click', () => {
-        music.muted = false
-        music.play().catch(() => {})
-    }, { once: true })
-})
-
-function toggleMusic() {
-    if (musicPlaying) {
-        music.pause()
-        musicPlaying = false
-        document.getElementById('music-toggle').textContent = '🔇'
-    } else {
-        music.muted = false
-        music.play()
-        musicPlaying = true
-        document.getElementById('music-toggle').textContent = '🔊'
-    }
+  // تأثيرات إضافية
+  noBtn.style.transform = `scale(${1 - noClickCount * 0.05}) rotate(${noClickCount * 10}deg)`;
 }
 
-function handleYesClick() {
-    if (!runawayEnabled) {
-        // Tease her to try No first
-        const msg = yesTeasePokes[Math.min(yesTeasedCount, yesTeasePokes.length - 1)]
-        yesTeasedCount++
-        showTeaseMessage(msg)
-        return
-    }
-    window.location.href = 'yes.html'
+// عند محاولة الضغط على "No"
+noBtn.addEventListener("mouseover", () => {
+  noClickCount++;
+
+  // تغيير النص
+  if (noClickCount < messages.length) {
+    message.textContent = messages[noClickCount];
+  } else {
+    message.textContent = "Just give up and press YES 😌❤️";
+  }
+
+  // تكبير زر "Yes"
+  yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+
+  moveNoButton();
+});
+
+// عند الضغط على "Yes"
+yesBtn.addEventListener("click", () => {
+  document.body.innerHTML = `
+    <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
+      <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
+      <p style="font-size:1.5em;">You said YES! 🥰</p>
+      <p>I love you more every day 💕</p>
+    </div>
+  `;
+
+  launchConfetti();
+  createHearts();
+});
+
+// 🎉 Confetti effect
+function launchConfetti() {
+  for (let i = 0; i < 120; i++) {
+    const confetti = document.createElement("div");
+    confetti.style.position = "fixed";
+    confetti.style.width = "8px";
+    confetti.style.height = "8px";
+    confetti.style.backgroundColor = randomColor();
+    confetti.style.top = "-10px";
+    confetti.style.left = Math.random() * window.innerWidth + "px";
+    confetti.style.opacity = Math.random();
+
+    document.body.appendChild(confetti);
+
+    let fall = setInterval(() => {
+      let top = parseFloat(confetti.style.top);
+      confetti.style.top = top + 5 + "px";
+
+      if (top > window.innerHeight) {
+        clearInterval(fall);
+        confetti.remove();
+      }
+    }, 20);
+  }
 }
 
-function showTeaseMessage(msg) {
-    let toast = document.getElementById('tease-toast')
-    toast.textContent = msg
-    toast.classList.add('show')
-    clearTimeout(toast._timer)
-    toast._timer = setTimeout(() => toast.classList.remove('show'), 2500)
+// 💕 Floating hearts
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.style.position = "fixed";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.bottom = "0px";
+    heart.style.fontSize = (20 + Math.random() * 20) + "px";
+    heart.style.opacity = Math.random();
+
+    document.body.appendChild(heart);
+
+    let rise = setInterval(() => {
+      let bottom = parseFloat(heart.style.bottom);
+      heart.style.bottom = bottom + 3 + "px";
+
+      if (bottom > window.innerHeight) {
+        clearInterval(rise);
+        heart.remove();
+      }
+    }, 20);
+  }, 300);
 }
 
-function handleNoClick() {
-    noClickCount++
-
-    // Cycle through guilt-trip messages
-    const msgIndex = Math.min(noClickCount, noMessages.length - 1)
-    noBtn.textContent = noMessages[msgIndex]
-
-    // Grow the Yes button bigger each time
-    const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize)
-    yesBtn.style.fontSize = `${currentSize * 1.35}px`
-    const padY = Math.min(18 + noClickCount * 5, 60)
-    const padX = Math.min(45 + noClickCount * 10, 120)
-    yesBtn.style.padding = `${padY}px ${padX}px`
-
-    // Shrink No button to contrast
-    if (noClickCount >= 2) {
-        const noSize = parseFloat(window.getComputedStyle(noBtn).fontSize)
-        noBtn.style.fontSize = `${Math.max(noSize * 0.85, 10)}px`
-    }
-
-    // Swap cat GIF through stages
-    const gifIndex = Math.min(noClickCount, gifStages.length - 1)
-    swapGif(gifStages[gifIndex])
-
-    // Runaway starts at click 5
-    if (noClickCount >= 5 && !runawayEnabled) {
-        enableRunaway()
-        runawayEnabled = true
-    }
+// 🎨 Random color generator
+function randomColor() {
+  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5", "#fff0f3"];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function swapGif(src) {
-    catGif.style.opacity = '0'
-    setTimeout(() => {
-        catGif.src = src
-        catGif.style.opacity = '1'
-    }, 200)
-}
-
-function enableRunaway() {
-    noBtn.addEventListener('mouseover', runAway)
-    noBtn.addEventListener('touchstart', runAway, { passive: true })
-}
-
-function runAway() {
-    const margin = 20
-    const btnW = noBtn.offsetWidth
-    const btnH = noBtn.offsetHeight
-    const maxX = window.innerWidth - btnW - margin
-    const maxY = window.innerHeight - btnH - margin
-
-    const randomX = Math.random() * maxX + margin / 2
-    const randomY = Math.random() * maxY + margin / 2
-
-    noBtn.style.position = 'fixed'
-    noBtn.style.left = `${randomX}px`
-    noBtn.style.top = `${randomY}px`
-    noBtn.style.zIndex = '50'
-}
+// Optional: click "No" still moves (extra evil 😄)
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  moveNoButton();
+});
