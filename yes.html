@@ -1,75 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy Anniversary ❤️</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background: #ffe6eb;
-      margin-top: 100px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3 Years With You ❤️</title>
 
-    h1 {
-      font-size: 2.5em;
-      color: #ff4d6d;
-    }
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #ffdde1, #ee9ca7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Arial", sans-serif;
+    overflow: hidden;
+  }
 
-    .buttons {
-      margin-top: 30px;
-      position: relative;
-      height: 200px;
-    }
+  .card {
+    text-align: center;
+    padding: 30px;
+    max-width: 600px;
+    animation: fadeIn 2s ease-in-out;
+  }
 
-    button {
-      font-size: 18px;
-      padding: 12px 25px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+  h1 {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
 
-    #yesBtn {
-      background-color: #ff4d6d;
-      color: white;
-    }
+  p {
+    font-size: 1.2rem;
+    color: white;
+    line-height: 1.6;
+    opacity: 0.95;
+  }
 
-    #noBtn {
-      background-color: #999;
-      color: white;
-      position: absolute;
+  .heart {
+    font-size: 3rem;
+    animation: beat 1s infinite;
+    margin: 20px 0;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    background: white;
+    color: #ff5e78;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #message {
+    margin-top: 20px;
+    display: none;
+    font-size: 1.1rem;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  @keyframes beat {
+    0%, 100% {transform: scale(1);}
+    50% {transform: scale(1.3);}
+  }
+
+  .floating {
+    position: absolute;
+    color: rgba(255,255,255,0.7);
+    animation: floatUp 6s linear infinite;
+    font-size: 20px;
+  }
+
+  @keyframes floatUp {
+    from {
+      transform: translateY(100vh);
+      opacity: 1;
     }
-  </style>
+    to {
+      transform: translateY(-10vh);
+      opacity: 0;
+    }
+  }
+</style>
 </head>
+
 <body>
 
-  <h1>Happy Anniversary, Love ❤️</h1>
-  <p>Will you stay with me forever?</p>
+<div class="card">
+  <h1>3 Years With You ❤️</h1>
+  <div class="heart">💖</div>
 
-  <div class="buttons">
-    <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 😢</button>
+  <p>
+    Three years ago, we started something I never want to end.<br/>
+    Every moment, every laugh, every fight, every hug — it all built us.
+  </p>
+
+  <p>
+    If I had to choose again… I’d still choose you. Always.
+  </p>
+
+  <button onclick="showMessage()">Click for a promise 💌</button>
+
+  <div id="message">
+    I promise to love you in all versions of life we meet.<br/>
+    Happy 3rd Anniversary ❤️
   </div>
+</div>
 
-  <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
+<script>
+function showMessage() {
+  document.getElementById("message").style.display = "block";
+  createHearts();
+}
 
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * 300;
-      const y = Math.random() * 150;
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    });
+function createHearts() {
+  for (let i = 0; i < 20; i++) {
+    let heart = document.createElement("div");
+    heart.className = "floating";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+    document.body.appendChild(heart);
 
-    yesBtn.addEventListener("click", () => {
-      document.body.innerHTML = `
-        <h1 style="color:#ff4d6d;">I love you always ❤️</h1>
-        <p>Happy Anniversary 🥰</p>
-      `;
-    });
-  </script>
+    setTimeout(() => heart.remove(), 6000);
+  }
+}
+</script>
 
 </body>
+</html>
