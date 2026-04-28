@@ -3,102 +3,157 @@ const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const message = document.getElementById("message");
 
-let noClickCount = 0;
+let noCount = 0;
+let yesUnlocked = false;
 
-// رسائل تتغير مع كل محاولة ضغط "No"
-const messages = [
+// 🔒 Lock YES initially
+yesBtn.style.opacity = "0.6";
+yesBtn.style.cursor = "not-allowed";
+
+// 💬 Messages
+const noMessages = [
+  "Hmm... try again 😏",
   "Are you sure? 😢",
-  "Really sure? 🥺",
-  "Think again 💔",
-  "Last chance 😭",
-  "You’re breaking my heart 💔",
-  "Okay this is getting serious 😤",
-  "Please just click YES 😭❤️"
+  "You can't escape this 😈",
+  "Getting closer... 👀",
+  "Almost there... 💕",
+  "Okay fine... one more 😌"
 ];
 
-// حركة زر "No"
+const blockedYesMessages = [
+  "Hey! Not so fast 😤",
+  "You gotta earn that YES 😌",
+  "Try pressing NO first 😏",
+  "Don't skip the story 😢❤️"
+];
+
+// 🏃 Move NO button
 function moveNoButton() {
   const maxX = window.innerWidth - noBtn.offsetWidth;
   const maxY = window.innerHeight - noBtn.offsetHeight;
 
-  const randomX = Math.random() * maxX;
-  const randomY = Math.random() * maxY;
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
 
   noBtn.style.position = "absolute";
-  noBtn.style.left = randomX + "px";
-  noBtn.style.top = randomY + "px";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 
-  // تأثيرات إضافية
-  noBtn.style.transform = `scale(${1 - noClickCount * 0.05}) rotate(${noClickCount * 10}deg)`;
+  // shrink + rotate
+  noBtn.style.transform =
+    `scale(${Math.max(0.5, 1 - noCount * 0.05)})
+     rotate(${noCount * 15}deg)`;
 }
 
-// عند محاولة الضغط على "No"
+// 😈 Handle NO hover
 noBtn.addEventListener("mouseover", () => {
-  noClickCount++;
+  noCount++;
 
-  // تغيير النص
-  if (noClickCount < messages.length) {
-    message.textContent = messages[noClickCount];
+  // update message
+  if (noCount < noMessages.length) {
+    message.textContent = noMessages[noCount];
   } else {
-    message.textContent = "Just give up and press YES 😌❤️";
+    message.textContent = "Okay okay... now you can press YES 😳❤️";
   }
 
-  // تكبير زر "Yes"
-  yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+  // grow YES gradually
+  yesBtn.style.transform = `scale(${1 + noCount * 0.12})`;
+
+  // unlock condition
+  if (noCount >= 5 && !yesUnlocked) {
+    unlockYes();
+  }
 
   moveNoButton();
 });
 
-// عند الضغط على "Yes"
-yesBtn.addEventListener("click", () => {
+// 🔒 Block YES spam clicks
+yesBtn.addEventListener("click", (e) => {
+  if (!yesUnlocked) {
+    e.preventDefault();
+
+    // random teasing message
+    const randomMsg =
+      blockedYesMessages[Math.floor(Math.random() * blockedYesMessages.length)];
+
+    message.textContent = randomMsg;
+
+    // shake button
+    yesBtn.style.transform = "scale(1.2) translateX(-5px)";
+    setTimeout(() => {
+      yesBtn.style.transform = "scale(1.2) translateX(5px)";
+    }, 100);
+
+    setTimeout(() => {
+      yesBtn.style.transform = "scale(1)";
+    }, 200);
+
+    return;
+  }
+
+  // ✅ REAL YES ACTION
+  startLoveSequence();
+});
+
+// 🔓 Unlock YES
+function unlockYes() {
+  yesUnlocked = true;
+
+  yesBtn.style.opacity = "1";
+  yesBtn.style.cursor = "pointer";
+  yesBtn.style.boxShadow = "0 0 20px rgba(255,77,109,0.8)";
+  yesBtn.innerText = "Yes ❤️ (Now you can click 😌)";
+
+  message.textContent = "Alright... you earned it 💖";
+}
+
+// 💖 Final sequence
+function startLoveSequence() {
   document.body.innerHTML = `
     <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
       <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
-      <p style="font-size:1.5em;">You said YES! 🥰</p>
+      <p style="font-size:1.5em;">You didn't give up on me 🥰</p>
       <p>I love you more every day 💕</p>
     </div>
   `;
 
   launchConfetti();
   createHearts();
-});
+}
 
-// 🎉 Confetti effect
+// 🎉 Confetti
 function launchConfetti() {
   for (let i = 0; i < 120; i++) {
-    const confetti = document.createElement("div");
-    confetti.style.position = "fixed";
-    confetti.style.width = "8px";
-    confetti.style.height = "8px";
-    confetti.style.backgroundColor = randomColor();
-    confetti.style.top = "-10px";
-    confetti.style.left = Math.random() * window.innerWidth + "px";
-    confetti.style.opacity = Math.random();
+    const el = document.createElement("div");
+    el.style.position = "fixed";
+    el.style.width = "8px";
+    el.style.height = "8px";
+    el.style.background = randomColor();
+    el.style.top = "-10px";
+    el.style.left = Math.random() * window.innerWidth + "px";
 
-    document.body.appendChild(confetti);
+    document.body.appendChild(el);
 
     let fall = setInterval(() => {
-      let top = parseFloat(confetti.style.top);
-      confetti.style.top = top + 5 + "px";
+      let top = parseFloat(el.style.top);
+      el.style.top = top + 5 + "px";
 
       if (top > window.innerHeight) {
         clearInterval(fall);
-        confetti.remove();
+        el.remove();
       }
     }, 20);
   }
 }
 
-// 💕 Floating hearts
+// 💕 Hearts
 function createHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
     heart.innerHTML = "❤️";
     heart.style.position = "fixed";
     heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.bottom = "0px";
-    heart.style.fontSize = (20 + Math.random() * 20) + "px";
-    heart.style.opacity = Math.random();
+    heart.style.bottom = "0";
 
     document.body.appendChild(heart);
 
@@ -114,14 +169,8 @@ function createHearts() {
   }, 300);
 }
 
-// 🎨 Random color generator
+// 🎨 Colors
 function randomColor() {
-  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5", "#fff0f3"];
+  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5"];
   return colors[Math.floor(Math.random() * colors.length)];
 }
-
-// Optional: click "No" still moves (extra evil 😄)
-noBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  moveNoButton();
-});
