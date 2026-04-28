@@ -1,33 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Will You?</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="romantic-bg">
+body {
+  margin: 0;
+  font-family: "Georgia", serif;
+  color: #fff;
+}
 
-  <div class="floating-hearts"></div>
+.centered {
+  background: linear-gradient(135deg, #1a1a2e, #3a0ca3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
 
-  <div class="card question-card">
-    <h1 class="poem">
-      Will you linger with me<br/>
-      through all the seasons of my existence?
-    </h1>
+.romantic-bg {
+  background: radial-gradient(circle at top, #ff758c, #1a1a2e);
+  overflow: hidden;
+}
 
-    <p class="subtitle">
-      May 14, 2026 — our third anniversary
-    </p>
+.card {
+  padding: 40px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  max-width: 500px;
+}
 
-    <div class="buttons">
-      <button id="yesBtn" class="yes-btn">Yes</button>
-      <button id="noBtn" class="no-btn">No</button>
-    </div>
+h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
 
-    <p id="response" class="response"></p>
-  </div>
+.subtitle {
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
 
-  <script src="yes or no script.js"></script>
-</body>
-</html>
+.primary-btn, .yes-btn, .no-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px;
+}
+
+.primary-btn {
+  background: #ff4d6d;
+  color: white;
+}
+
+.yes-btn {
+  background: #00c896;
+  color: white;
+}
+
+.no-btn {
+  background: #ffb703;
+  color: black;
+  position: relative;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.response {
+  margin-top: 20px;
+  font-style: italic;
+}
+
+/* hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  color: pink;
+  animation: floatUp 3s linear forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
