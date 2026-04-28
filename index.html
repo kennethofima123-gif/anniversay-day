@@ -1,36 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will you be my Valentine? 💕</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Happy Anniversary ❤️</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffe6eb, #ffd6e0);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .container {
+      margin-top: 120px;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #ff4d6d;
+    }
+
+    p {
+      font-size: 1.3em;
+      color: #444;
+    }
+
+    .buttons {
+      margin-top: 40px;
+      position: relative;
+      height: 300px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #yesBtn {
+      background: #ff4d6d;
+      color: white;
+      box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.1);
+      background: #ff3355;
+    }
+
+    #noBtn {
+      background: #888;
+      color: white;
+      position: absolute;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="hearts-bg"></div>
 
-    <div class="container">
-        <h1>Will you be my Valentine? 💕</h1>
+  <div class="container">
+    <h1>Happy Anniversary ❤️</h1>
+    <p id="message">Will you stay with me forever? 💕</p>
 
-        <div class="gif-container">
-            <img id="cat-gif" src="https://media.tenor.com/EBV7OT7ACfwAAAAj/u-u-qua-qua-u-quaa.gif" alt="cute character">
-        </div>
-
-        <div class="buttons">
-            <button id="yes-btn" onclick="handleYesClick()">Yes</button>
-            <button id="no-btn" onclick="handleNoClick()">No</button>
-        </div>
-        <div id="tease-toast"></div>
+    <div class="buttons">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 😢</button>
     </div>
+  </div>
 
-    <audio id="bg-music" loop autoplay muted>
-        <source src="music/beabadoobee - Glue Song (Lyrics).mp3" type="audio/mpeg">
-    </audio>
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
 
-    <button id="music-toggle" onclick="toggleMusic()" title="Toggle music">🔊</button>
+    let noClickCount = 0;
 
-    <script src="script.js"></script>
+    const messages = [
+      "Are you sure? 😢",
+      "Really sure? 🥺",
+      "Think again 💔",
+      "Last chance 😭",
+      "You're breaking my heart 💔",
+      "Okay this is getting serious 😤",
+      "Please just click YES 😭❤️"
+    ];
+
+    function moveNoButton() {
+      const maxX = window.innerWidth - noBtn.offsetWidth;
+      const maxY = window.innerHeight - noBtn.offsetHeight;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      noBtn.style.left = randomX + "px";
+      noBtn.style.top = randomY + "px";
+
+      noBtn.style.transform =
+        `scale(${1 - noClickCount * 0.05}) rotate(${noClickCount * 10}deg)`;
+    }
+
+    noBtn.addEventListener("mouseover", () => {
+      noClickCount++;
+
+      if (noClickCount < messages.length) {
+        message.textContent = messages[noClickCount];
+      } else {
+        message.textContent = "Just give up and press YES 😌❤️";
+      }
+
+      yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+
+      moveNoButton();
+    });
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
+          <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
+          <p style="font-size:1.5em;">You said YES! 🥰</p>
+          <p>I love you more every day 💕</p>
+        </div>
+      `;
+
+      launchConfetti();
+      createHearts();
+    });
+
+    function launchConfetti() {
+      for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement("div");
+        confetti.style.position = "fixed";
+        confetti.style.width = "8px";
+        confetti.style.height = "8px";
+        confetti.style.backgroundColor = randomColor();
+        confetti.style.top = "-10px";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+
+        document.body.appendChild(confetti);
+
+        let fall = setInterval(() => {
+          let top = parseFloat(confetti.style.top);
+          confetti.style.top = top + 5 + "px";
+
+          if (top > window.innerHeight) {
+            clearInterval(fall);
+            confetti.remove();
+          }
+        }, 20);
+      }
+    }
+
+    function createHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "fixed";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.bottom = "0px";
+        heart.style.fontSize = (20 + Math.random() * 20) + "px";
+
+        document.body.appendChild(heart);
+
+        let rise = setInterval(() => {
+          let bottom = parseFloat(heart.style.bottom);
+          heart.style.bottom = bottom + 3 + "px";
+
+          if (bottom > window.innerHeight) {
+            clearInterval(rise);
+            heart.remove();
+          }
+        }, 20);
+      }, 300);
+    }
+
+    function randomColor() {
+      const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+  </script>
+
 </body>
 </html>
