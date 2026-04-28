@@ -2,126 +2,179 @@
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const message = document.getElementById("message");
+const title = document.querySelector("h1");
 
-let noClickCount = 0;
+let noCount = 0;
+let typingIndex = 0;
 
-// رسائل تتغير مع كل محاولة ضغط "No"
+// 💬 Intro typing messages
+const introText = "I have something important to ask you... ❤️";
+function typeIntro() {
+  if (typingIndex < introText.length) {
+    message.textContent += introText.charAt(typingIndex);
+    typingIndex++;
+    setTimeout(typeIntro, 50);
+  }
+}
+
+// Start typing effect
+message.textContent = "";
+typeIntro();
+
+// 💔 Escalating messages
 const messages = [
   "Are you sure? 😢",
   "Really sure? 🥺",
   "Think again 💔",
-  "Last chance 😭",
-  "You’re breaking my heart 💔",
-  "Okay this is getting serious 😤",
-  "Please just click YES 😭❤️"
+  "You're breaking my heart 💔",
+  "This is getting serious 😤",
+  "Please don't do this 😭",
+  "I will keep asking forever 😈❤️"
 ];
 
-// حركة زر "No"
+// 🏃 Move NO button
 function moveNoButton() {
   const maxX = window.innerWidth - noBtn.offsetWidth;
   const maxY = window.innerHeight - noBtn.offsetHeight;
 
-  const randomX = Math.random() * maxX;
-  const randomY = Math.random() * maxY;
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
 
   noBtn.style.position = "absolute";
-  noBtn.style.left = randomX + "px";
-  noBtn.style.top = randomY + "px";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 
-  // تأثيرات إضافية
-  noBtn.style.transform = `scale(${1 - noClickCount * 0.05}) rotate(${noClickCount * 10}deg)`;
+  // spin + shrink
+  noBtn.style.transform = `
+    scale(${Math.max(0.5, 1 - noCount * 0.05)})
+    rotate(${noCount * 15}deg)
+  `;
 }
 
-// عند محاولة الضغط على "No"
+// 😈 Resist "No"
 noBtn.addEventListener("mouseover", () => {
-  noClickCount++;
+  noCount++;
 
-  // تغيير النص
-  if (noClickCount < messages.length) {
-    message.textContent = messages[noClickCount];
+  if (noCount < messages.length) {
+    message.textContent = messages[noCount];
   } else {
-    message.textContent = "Just give up and press YES 😌❤️";
+    message.textContent = "Okay you literally cannot press NO 😌❤️";
   }
 
-  // تكبير زر "Yes"
-  yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+  // YES button grows + glows
+  yesBtn.style.transform = `scale(${1 + noCount * 0.15})`;
+  yesBtn.style.boxShadow = `0 0 ${10 + noCount * 5}px rgba(255,77,109,0.8)`;
+
+  // shake screen if كثيرة 😄
+  if (noCount > 5) shakeScreen();
 
   moveNoButton();
 });
 
-// عند الضغط على "Yes"
-yesBtn.addEventListener("click", () => {
-  document.body.innerHTML = `
-    <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
-      <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
-      <p style="font-size:1.5em;">You said YES! 🥰</p>
-      <p>I love you more every day 💕</p>
-    </div>
-  `;
-
-  launchConfetti();
-  createHearts();
+// Prevent clicking NO
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  moveNoButton();
 });
 
-// 🎉 Confetti effect
-function launchConfetti() {
-  for (let i = 0; i < 120; i++) {
-    const confetti = document.createElement("div");
-    confetti.style.position = "fixed";
-    confetti.style.width = "8px";
-    confetti.style.height = "8px";
-    confetti.style.backgroundColor = randomColor();
-    confetti.style.top = "-10px";
-    confetti.style.left = Math.random() * window.innerWidth + "px";
-    confetti.style.opacity = Math.random();
+// 💥 Screen shake effect
+function shakeScreen() {
+  document.body.style.transition = "transform 0.1s";
 
-    document.body.appendChild(confetti);
+  let shakes = 0;
+  const interval = setInterval(() => {
+    document.body.style.transform =
+      `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
+
+    shakes++;
+    if (shakes > 10) {
+      clearInterval(interval);
+      document.body.style.transform = "translate(0,0)";
+    }
+  }, 50);
+}
+
+// 💖 YES CLICK → full experience
+yesBtn.addEventListener("click", () => {
+  playMusic();
+  launchConfetti();
+  createHearts();
+  showFinalScene();
+});
+
+// 🎬 Final scene (story mode)
+function showFinalScene() {
+  document.body.innerHTML = `
+    <div style="text-align:center; padding:50px; font-family:sans-serif;">
+      <h1 style="color:#ff4d6d; font-size:3em;">Happy Anniversary ❤️</h1>
+      <p style="font-size:1.5em;">You said YES 🥰</p>
+      <p style="max-width:600px; margin:auto; font-size:1.2em;">
+        Every moment with you has been a beautiful memory.
+        From the first laugh to today, I would choose you again and again.
+      </p>
+      <p style="margin-top:20px;">I love you forever 💕</p>
+    </div>
+  `;
+}
+
+// 🎉 Confetti
+function launchConfetti() {
+  for (let i = 0; i < 150; i++) {
+    const el = document.createElement("div");
+    el.style.position = "fixed";
+    el.style.width = "8px";
+    el.style.height = "8px";
+    el.style.background = randomColor();
+    el.style.top = "-10px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+
+    document.body.appendChild(el);
 
     let fall = setInterval(() => {
-      let top = parseFloat(confetti.style.top);
-      confetti.style.top = top + 5 + "px";
+      let top = parseFloat(el.style.top);
+      el.style.top = top + 6 + "px";
 
       if (top > window.innerHeight) {
         clearInterval(fall);
-        confetti.remove();
+        el.remove();
       }
     }, 20);
   }
 }
 
-// 💕 Floating hearts
+// 💕 Hearts
 function createHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
     heart.innerHTML = "❤️";
     heart.style.position = "fixed";
     heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.bottom = "0px";
-    heart.style.fontSize = (20 + Math.random() * 20) + "px";
-    heart.style.opacity = Math.random();
+    heart.style.bottom = "0";
+    heart.style.fontSize = (20 + Math.random() * 25) + "px";
 
     document.body.appendChild(heart);
 
     let rise = setInterval(() => {
       let bottom = parseFloat(heart.style.bottom);
-      heart.style.bottom = bottom + 3 + "px";
+      heart.style.bottom = bottom + 4 + "px";
 
       if (bottom > window.innerHeight) {
         clearInterval(rise);
         heart.remove();
       }
     }, 20);
-  }, 300);
+  }, 250);
 }
 
-// 🎨 Random color generator
+// 🎵 Music (replace with your file)
+function playMusic() {
+  const audio = new Audio("your-song.mp3"); // <-- put your file here
+  audio.loop = true;
+  audio.play();
+}
+
+// 🎨 Colors
 function randomColor() {
-  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5", "#fff0f3"];
+  const colors = ["#ff4d6d", "#ff99ac", "#ffc2d1", "#ffccd5"];
   return colors[Math.floor(Math.random() * colors.length)];
 }
-
-// Optional: click "No" still moves (extra evil 😄)
-noBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  moveNoButton();
-});
