@@ -1,24 +1,33 @@
-<style>
-@keyframes floatUp {
-  to {
-    transform: translateY(-120vh);
-    opacity: 0;
-  }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="romantic-bg">
 
-@keyframes fall {
-  to {
-    transform: translateY(120vh) rotate(360deg);
-    opacity: 0;
-  }
-}
+  <div class="floating-hearts"></div>
 
-.pop-in {
-  animation: pop 0.6s ease forwards;
-}
+  <div class="card question-card">
+    <h1 class="poem">
+      Will you linger with me<br/>
+      through all the seasons of my existence?
+    </h1>
 
-@keyframes pop {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-</style>
+    <p class="subtitle">
+      May 14, 2026 — our third anniversary
+    </p>
+
+    <div class="buttons">
+      <button id="yesBtn" class="yes-btn">Yes</button>
+      <button id="noBtn" class="no-btn">No</button>
+    </div>
+
+    <p id="response" class="response"></p>
+  </div>
+
+  <script src="yes or no script.js"></script>
+</body>
+</html>
